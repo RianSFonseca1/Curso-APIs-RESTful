@@ -9,13 +9,10 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/math")
 public class MathController {
 
-    private static final String template = "Hello, %s!";
-    private final AtomicLong counter = new AtomicLong();
-
     @GetMapping("/sum/{number1}/{number2}")
     public Double sum(@PathVariable String number1, @PathVariable String number2) throws Exception{
         if(!isNumeric(number1) || !isNumeric(number2)){
-            throw new Exception("Algum dos valores inseridos não é numérico!");
+            throw new UnsupportedOperationException("Please set a numeric value");
         }
         return convertToDouble(number1) + convertToDouble(number2);
     }
@@ -29,15 +26,8 @@ public class MathController {
         }
     }
 
-    private Double convertToDouble (String strNumber){
-        if(strNumber != null) {
-            if (isNumeric(strNumber)) {
-                String number = strNumber.replaceAll(",",".");
-                return Double.parseDouble(number);
-            }else{
-                return 0D;
-            }
-        }
-        return 0D;
+    private Double convertToDouble (String strNumber) {
+        String number = strNumber.replaceAll(",", ".");
+        return Double.parseDouble(number);
     }
 }
