@@ -1,5 +1,6 @@
 package com.Curso_APIs_REST.Modulo_5.Controller;
 
+import jakarta.websocket.server.PathParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -9,28 +10,38 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/math")
 public class MathController {
 
-    @GetMapping("/operation/{number1}/{operator}/{number2}")
-    public Double operation(@PathVariable String number1,@PathVariable String operator,@PathVariable String number2) throws Exception {
+    @GetMapping("/operation/{operator}/{number1}/{number2}")
+    public Double operation(@PathVariable String operator,@PathVariable String number1,@PathVariable String number2) throws Exception {
         if (!isNumeric(number1) || !isNumeric(number2)) {
             throw new UnsupportedOperationException("Please set a numeric value!");
         }
         switch (operator) {
-            case "+":
+            case "sum":
                 return convertToDouble(number1) + convertToDouble(number2);
-            case "-":
+            case "subtraction":
                 return convertToDouble(number1) - convertToDouble(number2);
-            case "*":
+            case "multiplication":
                 return convertToDouble(number1) * convertToDouble(number2);
-            case "/":
+            case "division":
                 if (!number2.equals("0")) {
                     return convertToDouble(number1) / convertToDouble(number2);
                 } else {
                     System.out.println("Erro: Divisão por zero.");
                 }
+            case "mean":
+                return (convertToDouble(number1) + convertToDouble(number2))/2;
             default:
                 throw new UnsupportedOperationException("Please set a valid operator!");
-
         }
+    }
+
+    @GetMapping("/squareRoot/{number}")
+    public Double operationSquareRoot(@PathVariable String number) throws Exception {
+        if (!isNumeric(number)) {
+            throw new UnsupportedOperationException("Please set a numeric value!");
+        }
+
+        return Math.sqrt(convertToDouble(number));
     }
 
     private boolean isNumeric (String strNumber){
