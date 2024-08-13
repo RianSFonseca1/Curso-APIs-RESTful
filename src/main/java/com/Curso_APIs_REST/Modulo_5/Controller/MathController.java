@@ -9,12 +9,28 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/math")
 public class MathController {
 
-    @GetMapping("/sum/{number1}/{number2}")
-    public Double sum(@PathVariable String number1, @PathVariable String number2) throws Exception{
-        if(!isNumeric(number1) || !isNumeric(number2)){
-            throw new UnsupportedOperationException("Please set a numeric value");
+    @GetMapping("/operation/{number1}/{operator}/{number2}")
+    public Double operation(@PathVariable String number1,@PathVariable String operator,@PathVariable String number2) throws Exception {
+        if (!isNumeric(number1) || !isNumeric(number2)) {
+            throw new UnsupportedOperationException("Please set a numeric value!");
         }
-        return convertToDouble(number1) + convertToDouble(number2);
+        switch (operator) {
+            case "+":
+                return convertToDouble(number1) + convertToDouble(number2);
+            case "-":
+                return convertToDouble(number1) - convertToDouble(number2);
+            case "*":
+                return convertToDouble(number1) * convertToDouble(number2);
+            case "/":
+                if (!number2.equals("0")) {
+                    return convertToDouble(number1) / convertToDouble(number2);
+                } else {
+                    System.out.println("Erro: Divisão por zero.");
+                }
+            default:
+                throw new UnsupportedOperationException("Please set a valid operator!");
+
+        }
     }
 
     private boolean isNumeric (String strNumber){
