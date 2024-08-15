@@ -1,6 +1,8 @@
 package com.Curso_APIs_REST.Modulo_5.Controller;
 
+import com.Curso_APIs_REST.Modulo_5.Services.CalculatorServiceImpl;
 import jakarta.websocket.server.PathParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -10,51 +12,45 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/math")
 public class MathController {
 
-    @GetMapping("/operation/{operator}/{number1}/{number2}")
-    public Double operation(@PathVariable String operator,@PathVariable String number1,@PathVariable String number2) throws Exception {
-        if (!isNumeric(number1) || !isNumeric(number2)) {
-            throw new UnsupportedOperationException("Please set a numeric value!");
-        }
-        switch (operator) {
-            case "sum":
-                return convertToDouble(number1) + convertToDouble(number2);
-            case "subtraction":
-                return convertToDouble(number1) - convertToDouble(number2);
-            case "multiplication":
-                return convertToDouble(number1) * convertToDouble(number2);
-            case "division":
-                if (!number2.equals("0")) {
-                    return convertToDouble(number1) / convertToDouble(number2);
-                } else {
-                    System.out.println("Erro: Divisão por zero.");
-                }
-            case "mean":
-                return (convertToDouble(number1) + convertToDouble(number2))/2;
-            default:
-                throw new UnsupportedOperationException("Please set a valid operator!");
-        }
+    private final CalculatorServiceImpl calculator;
+
+    public MathController(CalculatorServiceImpl calculator) {
+        this.calculator = calculator;
     }
 
-    @GetMapping("/squareRoot/{number}")
-    public Double operationSquareRoot(@PathVariable String number) throws Exception {
-        if (!isNumeric(number)) {
-            throw new UnsupportedOperationException("Please set a numeric value!");
-        }
-
-        return Math.sqrt(convertToDouble(number));
+    @GetMapping("/sum/{number1}/{number2}")
+    public Double sum(@PathVariable String number1,@PathVariable String number2){
+        return calculator.sum(number1,number2);
     }
 
-    private boolean isNumeric (String strNumber){
-        if(strNumber != null) {
-            String number = strNumber.replaceAll(",",".");
-            return number.matches("[-+]?[0-9]*\\.?[0-9]+");
-        }else{
-            return false;
-        }
+    @GetMapping("/subtraction/{number1}/{number2}")
+    public Double subtraction(@PathVariable String number1,@PathVariable String number2){
+        return calculator.subtraction(number1,number2);
     }
 
-    private Double convertToDouble (String strNumber) {
-        String number = strNumber.replaceAll(",", ".");
-        return Double.parseDouble(number);
+    @GetMapping("/multiplication/{number1}/{number2}")
+    public Double multiplication(@PathVariable String number1,@PathVariable String number2){
+        return calculator.multiplication(number1,number2);
     }
+
+    @GetMapping("/division/{number1}/{number2}")
+    public Double division(@PathVariable String number1,@PathVariable String number2){
+        return calculator.division(number1,number2);
+    }
+
+    @GetMapping("/mean/{number1}/{number2}")
+    public Double mean(@PathVariable String number1,@PathVariable String number2){
+        return calculator.mean(number1,number2);
+    }
+
+    @GetMapping("/mean/{number1}")
+    public Double mean(@PathVariable String number1){
+        return calculator.mean(number1);
+    }
+
+    @GetMapping("/squareRoot/{number1}")
+    public Double squareRoot(@PathVariable String number1){
+        return calculator.squareRoot(number1);
+    }
+
 }
